@@ -19,9 +19,9 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".features.citydetails.CityDetailsActivity"
-            android:parentActivityName=".features.citylist.CityListActivity" />
-        <activity android:name=".features.citylist.CityListActivity" />
+            android:name=".features.weather.WeatherActivity"
+            android:parentActivityName=".features.city.CityActivity" />
+        <activity android:name=".features.city.CityActivity" />
     </application>
 
 </manifest>

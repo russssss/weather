@@ -1,13 +1,14 @@
-package com.android.weatherapp.features.citylist
+package com.android.weatherapp.features.city
 
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.RecyclerView
 import com.android.weatherapp.R
-import com.android.weatherapp.features.citydetails.CityDetailsActivity
+import com.android.weatherapp.features.weather.WeatherActivity
 
-class CityListActivity : AppCompatActivity() {
+class CityActivity : AppCompatActivity() {
 
     lateinit var cityViewModel: CityViewModel
     lateinit var cityAdapter: CityAdapter
@@ -29,14 +30,19 @@ class CityListActivity : AppCompatActivity() {
         cityAdapter.update(ArrayList())
 
         cityAdapter.onItemClick = { contact ->
-            startActivity(Intent(this, CityDetailsActivity::class.java))
+            startActivity(Intent(this, WeatherActivity::class.java))
         }
     }
 
     private fun init() {
 
-        val mock = mutableListOf<String>("Moscow", "Spb")
-        cityAdapter.update(mock as ArrayList<String>)
+        cityViewModel = CityViewModel(application)
+
+        cityViewModel.weatherLiveData.observe(this, Observer {
+            cityAdapter?.let { e -> cityAdapter.update(it as ArrayList<String>) }
+        })
+
+        cityViewModel.getWeather()
     }
 
 

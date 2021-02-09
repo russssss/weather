@@ -1,23 +1,23 @@
-package com.android.weatherapp.features.citydetails
+package com.android.weatherapp.features.city
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.android.weatherapp.R
 
-class WeatherAdapter: RecyclerView.Adapter<WeatherHolder>() {
+class CityAdapter : RecyclerView.Adapter<CityHolder>() {
 
     var onItemClick: ((String) -> Unit)? = null
     var data = ArrayList<String>()
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): WeatherHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CityHolder {
         var v = LayoutInflater.from(parent.getContext())
-            .inflate(R.layout.weather_layout, parent, false)
+            .inflate(R.layout.city_layout, parent, false)
 
-        return WeatherHolder(v)
+        return CityHolder(v)
     }
 
-    override fun onBindViewHolder(holder: WeatherHolder, position: Int) {
+    override fun onBindViewHolder(holder: CityHolder, position: Int) {
         holder.city.text = data[position]
         holder.weather.text = data[position]
 

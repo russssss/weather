@@ -5,7 +5,7 @@ import android.os.Bundle
 import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 import com.android.weatherapp.R
-import com.android.weatherapp.features.citylist.CityListActivity
+import com.android.weatherapp.features.city.CityActivity
 
 class WelcomeActivity : AppCompatActivity() {
 
@@ -18,7 +18,7 @@ class WelcomeActivity : AppCompatActivity() {
             startActivity(
                 Intent(
                     this,
-                    CityListActivity::class.java
+                    CityActivity::class.java
                 ))
         }
 

@@ -1,15 +1,15 @@
-package com.android.weatherapp.features.citydetails
+package com.android.weatherapp.features.weather
 
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.RecyclerView
 import com.android.weatherapp.R
-import com.android.weatherapp.features.citylist.CityViewModel
 
-class CityDetailsActivity : AppCompatActivity() {
+class WeatherActivity : AppCompatActivity() {
 
-    lateinit var cityViewModel: CityViewModel
+    lateinit var weatherViewModel: WeatherViewModel
     lateinit var weatherAdapter: WeatherAdapter
     lateinit var recyclerView: RecyclerView
 
@@ -27,15 +27,19 @@ class CityDetailsActivity : AppCompatActivity() {
         recyclerView.adapter = weatherAdapter
 
         weatherAdapter.onItemClick = { contact ->
-            startActivity(Intent(this, CityDetailsActivity::class.java))
+            startActivity(Intent(this, WeatherActivity::class.java))
         }
     }
 
     private fun init() {
         supportActionBar?.setHomeButtonEnabled(true)
 
-        val mock = mutableListOf<String>("+8", "+9", "+12", "+15", "+20", "+19")
+        weatherViewModel = WeatherViewModel(application)
 
-        weatherAdapter.update(mock as ArrayList<String>)
+        weatherViewModel.weatherLiveData.observe(this, Observer {
+            weatherAdapter?.let { e -> weatherAdapter.update(it as ArrayList<String>) }
+        })
+
+        weatherViewModel.getWeather()
     }
 }

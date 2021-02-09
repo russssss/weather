@@ -1,4 +1,4 @@
-package com.android.weatherapp.features.citydetails
+package com.android.weatherapp.features.weather
 
 import com.android.weatherapp.features.service.ApiHelper
 
