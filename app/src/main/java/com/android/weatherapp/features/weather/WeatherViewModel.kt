@@ -5,7 +5,10 @@ import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import com.android.testmvvm.features.db.StorageApi
+import com.android.testmvvm.features.db.WeatherStorageData
 import com.android.weatherapp.features.app.App
+import com.android.weatherapp.features.db.WeatherWeekStorageData
 import kotlinx.coroutines.*
 import kotlin.coroutines.CoroutineContext
 
@@ -13,13 +16,18 @@ import kotlin.coroutines.CoroutineContext
 class WeatherViewModel(application: Application) : AndroidViewModel(application), CoroutineScope {
 
     val mainRepository = (application as App).restApi.mainRepository
+    val db = (application as App).db
     internal val weatherLiveData = MutableLiveData<WeatherModel>()
     val job = SupervisorJob()
+    lateinit var storageApi: StorageApi;
+
+    init {
+        storageApi = StorageApi(application)
+    }
 
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main + job + CoroutineExceptionHandler { _, e ->
             showMessage(e)
-
         }
 
     private fun showMessage(e: Throwable) {
@@ -31,13 +39,40 @@ class WeatherViewModel(application: Application) : AndroidViewModel(application)
         coroutineContext.cancelChildren()
     }
 
-    fun getWeather(city: String) = viewModelScope.launch(coroutineContext) {
-        mainRepository.getWether(city)?.let {
+    fun getWeather(cityName: String) = viewModelScope.launch(coroutineContext) {
+
+        var weatherModel: WeatherModel? = null
+
+        withContext(Dispatchers.IO) {
+            db.weatherDao().findByName(cityName)?.let {
+                val temperature: List<Weather?>? =
+                    it.weekweather?.map { Weather(it?.date, it?.temp) }
+                weatherModel = WeatherModel(it.city, temperature)
+
+                Log.d("msg", "show 1");
+            }
+        }
+
+        weatherModel?.let { weatherLiveData.value = weatherModel }
+
+        mainRepository.getWether(cityName)?.let {
             val city: String? = it.let { it.city?.name }
             val temperature: List<Weather?>? =
                 it.weatherList?.map { Weather(it?.dtTxt, it.main?.temp) }
-            val weatherModel = WeatherModel(city, temperature)
-            weatherLiveData.value = weatherModel
+            var weatherModel = WeatherModel(city, temperature)
+
+            Log.d("msg", "show 2");
+
+            if (weatherModel != null) {
+                withContext(Dispatchers.IO) {
+                    val temperatureDB: List<WeatherWeekStorageData?>? =
+                        it.weatherList?.map { WeatherWeekStorageData(it?.dtTxt, it.main?.temp) }
+                    val d = WeatherStorageData(0, cityName, temperatureDB);
+                    db.weatherDao().insertAll(d)
+                    Log.d("msg", "show 3");
+                }
+                weatherLiveData.value = weatherModel
+            }
         }
     }
 }

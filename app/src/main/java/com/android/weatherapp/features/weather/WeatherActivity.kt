@@ -35,6 +35,7 @@ class WeatherActivity : AppCompatActivity() {
     }
 
     private fun init() {
+
         (applicationContext as App).appComponent.inject(this)
 
         supportActionBar?.setHomeButtonEnabled(true)
