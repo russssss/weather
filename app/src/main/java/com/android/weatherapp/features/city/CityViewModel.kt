@@ -10,7 +10,7 @@ import kotlinx.coroutines.launch
 class CityViewModel(application: Application) :
     AndroidViewModel(application) {
 
-    private val mock = mutableListOf<String>("Moscow", "Spb")
+    private val mock = mutableListOf<String>("Moscow", "St. Petersburg")
     internal val weatherLiveData = MutableLiveData<List<String>>()
 
     fun getWeather() = viewModelScope.launch(Dispatchers.Main) {
