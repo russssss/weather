@@ -11,7 +11,7 @@ class WeatherHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
     val weather: TextView
 
     init {
-        city = itemView.findViewById<TextView>(R.id.info)
+        city = itemView.findViewById<TextView>(R.id.date)
         weather = itemView.findViewById<TextView>(R.id.weather)
     }
 }

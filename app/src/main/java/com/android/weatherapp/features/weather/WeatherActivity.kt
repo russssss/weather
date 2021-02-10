@@ -37,7 +37,7 @@ class WeatherActivity : AppCompatActivity() {
         weatherViewModel = WeatherViewModel(application)
 
         weatherViewModel.weatherLiveData.observe(this, Observer {
-            weatherAdapter?.let { e -> weatherAdapter.update(it as ArrayList<String>) }
+            weatherAdapter?.let { e -> weatherAdapter.update((it as WeatherModel).weather as ArrayList<Weather>) }
         })
 
         weatherViewModel.getWeather()

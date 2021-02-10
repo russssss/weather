@@ -14,17 +14,10 @@ class CityViewModel(application: Application) :
     internal val weatherLiveData = MutableLiveData<List<String>>()
 
     fun getWeather() = viewModelScope.launch(Dispatchers.Main) {
-//        try {
-//            val weather = mainRepository.getWether()
-//            weatherLiveData.value = weather
-//        } catch (e: Exception) {
-//        }
-
         try {
             weatherLiveData.value = mock
         } catch (e: Exception) {
 
         }
-
     }
 }

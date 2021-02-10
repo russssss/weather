@@ -7,8 +7,8 @@ import com.android.weatherapp.R
 
 class WeatherAdapter: RecyclerView.Adapter<WeatherHolder>() {
 
-    var onItemClick: ((String) -> Unit)? = null
-    var data = ArrayList<String>()
+    var onItemClick: ((Weather) -> Unit)? = null
+    var data = ArrayList<Weather>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): WeatherHolder {
         var v = LayoutInflater.from(parent.getContext())
@@ -18,8 +18,8 @@ class WeatherAdapter: RecyclerView.Adapter<WeatherHolder>() {
     }
 
     override fun onBindViewHolder(holder: WeatherHolder, position: Int) {
-        holder.city.text = data[position]
-        holder.weather.text = data[position]
+        holder.city.text = data[position].date
+        holder.weather.text = data[position].temp.toString()
 
         holder.city.setOnClickListener {
             onItemClick?.invoke(data[position])
@@ -30,7 +30,7 @@ class WeatherAdapter: RecyclerView.Adapter<WeatherHolder>() {
         return data.size
     }
 
-    fun update(data: ArrayList<String>) {
+    fun update(data: ArrayList<Weather>) {
         this.data = data
         notifyDataSetChanged()
     }
