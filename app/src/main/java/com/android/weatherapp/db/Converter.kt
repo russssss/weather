@@ -1,4 +1,4 @@
-package com.android.weatherapp.features.db
+package com.android.weatherapp.db
 
 import androidx.room.TypeConverter
 import com.google.gson.Gson

@@ -1,4 +1,4 @@
-package com.android.weatherapp.features.service
+package com.android.weatherapp.service
 
 class ApiHelper(private val apiService: ApiService) {
 

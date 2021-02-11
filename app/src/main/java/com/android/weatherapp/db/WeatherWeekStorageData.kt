@@ -1,4 +1,4 @@
-package com.android.weatherapp.features.db
+package com.android.weatherapp.db
 
 import com.google.gson.annotations.SerializedName
 

@@ -60,7 +60,9 @@ class CityActivity : AppCompatActivity() {
 
         cityAdapter.onItemClick = { contact ->
             startActivity(
-                Intent(this, WeatherActivity::class.java).putExtra(
+                Intent(this, WeatherActivity::class.java)
+                    .addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
+                    .putExtra(
                     Const.name_city,
                     contact.city
                 )
@@ -73,7 +75,6 @@ class CityActivity : AppCompatActivity() {
                 cityViewModel.getWeather(it)
             }
         }
-
     }
 
     private fun init() {

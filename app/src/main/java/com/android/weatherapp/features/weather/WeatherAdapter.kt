@@ -4,6 +4,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.android.weatherapp.R
+import kotlin.math.ceil
 
 class WeatherAdapter: RecyclerView.Adapter<WeatherHolder>() {
 
@@ -19,7 +20,7 @@ class WeatherAdapter: RecyclerView.Adapter<WeatherHolder>() {
 
     override fun onBindViewHolder(holder: WeatherHolder, position: Int) {
         holder.city.text = data[position].date
-        holder.weather.text = data[position].temp.toString()
+        holder.weather.text = ceil(data[position].temp ?: 0.0).toInt().toString()
 
         holder.city.setOnClickListener {
             onItemClick?.invoke(data[position])

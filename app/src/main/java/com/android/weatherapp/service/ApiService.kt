@@ -1,6 +1,6 @@
-package com.android.weatherapp.features.service
+package com.android.weatherapp.service
 
-import com.android.weatherapp.features.dto.WeatherData
+import com.android.weatherapp.dto.WeatherData
 import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Query

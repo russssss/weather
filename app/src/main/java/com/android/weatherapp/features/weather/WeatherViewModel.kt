@@ -1,39 +1,39 @@
 package com.android.weatherapp.features.weather
 
 import android.app.Application
-import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import com.android.testmvvm.features.db.StorageApi
+import com.android.testmvvm.features.db.AppDatabase
 import com.android.testmvvm.features.db.WeatherStorageData
-import com.android.weatherapp.features.app.App
-import com.android.weatherapp.features.db.WeatherWeekStorageData
+import com.android.weatherapp.db.WeatherWeekStorageData
+import com.android.weatherapp.service.MainRepository
 import com.android.weatherapp.utils.TimeUtils
 import kotlinx.coroutines.*
+import retrofit2.HttpException
+import java.net.ConnectException
+import java.net.SocketTimeoutException
+import java.net.UnknownHostException
+import javax.net.ssl.SSLHandshakeException
 import kotlin.coroutines.CoroutineContext
 
 
-class WeatherViewModel(application: Application) : AndroidViewModel(application), CoroutineScope {
+class WeatherViewModel(val db: AppDatabase, val mainRepository: MainRepository, application: Application) : AndroidViewModel(application), CoroutineScope {
 
-    val mainRepository = (application as App).restApi.mainRepository
-    val db = (application as App).db
     internal val weatherLiveData = MutableLiveData<WeatherModel>()
-    val job = SupervisorJob()
-    lateinit var storageApi: StorageApi;
-
-    init {
-        storageApi = StorageApi(application)
-    }
+    private val job = SupervisorJob()
+    internal var onMessage: ((String) -> Unit)? = null
 
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main + job + CoroutineExceptionHandler { _, e ->
-            showMessage(e)
+            val error = when (e) {
+                is UnknownHostException -> "Connection error"
+                is HttpException -> "No city found"
+                is SocketTimeoutException, is SSLHandshakeException, is ConnectException -> "Server timeout error"
+                else -> "Unexpected error"
+            }
+            onMessage?.invoke(error)
         }
-
-    private fun showMessage(e: Throwable) {
-        Log.d("msg", "show message")
-    }
 
     override fun onCleared() {
         super.onCleared()

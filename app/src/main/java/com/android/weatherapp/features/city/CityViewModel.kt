@@ -1,13 +1,13 @@
 package com.android.weatherapp.features.city
 
 import android.app.Application
-import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import com.android.testmvvm.features.db.AppDatabase
 import com.android.testmvvm.features.db.WeatherStorageData
-import com.android.weatherapp.features.app.App
-import com.android.weatherapp.features.db.WeatherWeekStorageData
+import com.android.weatherapp.db.WeatherWeekStorageData
+import com.android.weatherapp.service.MainRepository
 import com.android.weatherapp.features.weather.Weather
 import com.android.weatherapp.features.weather.WeatherModel
 import com.android.weatherapp.utils.TimeUtils
@@ -19,30 +19,27 @@ import java.net.UnknownHostException
 import javax.net.ssl.SSLHandshakeException
 import kotlin.coroutines.CoroutineContext
 
-class CityViewModel(application: Application) : AndroidViewModel(application), CoroutineScope {
+class CityViewModel(
+    val db: AppDatabase,
+    val mainRepository: MainRepository,
+    application: Application
+) : AndroidViewModel(application), CoroutineScope {
 
-    val mainRepository = (application as App).restApi.mainRepository
-    val db = (application as App).db
     internal val weatherLiveData = MutableLiveData<List<WeatherModel?>>()
-    val job = SupervisorJob()
-    var onMessage: ((String) -> Unit)? = null
+    private val job = SupervisorJob()
+    internal var onMessage: ((String) -> Unit)? = null
+
 
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main + job + CoroutineExceptionHandler { _, e ->
-            showMessage(e)
-
             val error = when (e) {
                 is UnknownHostException -> "Connection error"
-                is HttpException -> "No page found"
+                is HttpException -> "No city found"
                 is SocketTimeoutException, is SSLHandshakeException, is ConnectException -> "Server timeout error"
                 else -> "Unexpected error"
             }
             onMessage?.invoke(error)
         }
-
-    private fun showMessage(e: Throwable) {
-        Log.d("msg", "show message ${e.message}")
-    }
 
     override fun onCleared() {
         super.onCleared()
@@ -51,15 +48,10 @@ class CityViewModel(application: Application) : AndroidViewModel(application), C
 
     fun getWeather(vararg cityName: String) = viewModelScope.launch(coroutineContext) {
 
-        var isUpdated = false
         var weatherModelList: List<WeatherModel?>? = null
 
         withContext(Dispatchers.IO) {
-            weatherModelList = db.weatherDao().getAll().map {
-                val temperature: List<Weather?>? =
-                    it.weekweather?.map { Weather(it?.date, it?.temp) }
-                WeatherModel(it.city, temperature)
-            }
+            getWeatherDB()?.let { weatherModelList = it }
         }
 
         weatherModelList?.let { weatherLiveData.value = weatherModelList }
@@ -96,13 +88,17 @@ class CityViewModel(application: Application) : AndroidViewModel(application), C
             }
         }.let {
             withContext(Dispatchers.IO) {
-                weatherModelList = db.weatherDao().getAll().map {
-                    val temperature: List<Weather?>? =
-                        it.weekweather?.map { Weather(it?.date, it?.temp) }
-                    WeatherModel(it.city, temperature)
-                }
+                weatherModelList = getWeatherDB()
             }
             weatherModelList?.let { weatherLiveData.value = weatherModelList }
+        }
+    }
+
+    fun getWeatherDB(): List<WeatherModel> {
+        return db.weatherDao().getAll().map {
+            val temperature: List<Weather?>? =
+                it.weekweather?.map { Weather(it?.date, it?.temp) }
+            WeatherModel(it.city, temperature)
         }
     }
 }

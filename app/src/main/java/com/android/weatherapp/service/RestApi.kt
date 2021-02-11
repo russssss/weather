@@ -1,4 +1,4 @@
-package com.android.weatherapp.features.service
+package com.android.weatherapp.service
 
 import com.google.gson.GsonBuilder
 import okhttp3.OkHttpClient

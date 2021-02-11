@@ -1,6 +1,5 @@
 package com.android.weatherapp.features.app
 
-import android.app.Application
 import com.android.weatherapp.features.city.CityActivity
 import com.android.weatherapp.features.city.CityModule
 import com.android.weatherapp.features.weather.WeatherActivity
@@ -13,5 +12,4 @@ import javax.inject.Singleton
 interface AppComponent {
     fun inject(cityActivity: CityActivity)
     fun inject(weatherActivity: WeatherActivity)
-    fun app(): Application
 }

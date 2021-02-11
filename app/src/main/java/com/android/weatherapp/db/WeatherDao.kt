@@ -4,7 +4,7 @@ import androidx.room.*
 
 @Dao
 interface WeatherDao {
-    @Query("SELECT * FROM running_table")
+    @Query("SELECT * FROM running_table ORDER BY city")
     fun getAll(): List<WeatherStorageData>
 
     @Query("SELECT * FROM running_table WHERE uid IN (:userIds)")

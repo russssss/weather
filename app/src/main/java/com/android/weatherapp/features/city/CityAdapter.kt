@@ -22,7 +22,7 @@ class CityAdapter : RecyclerView.Adapter<CityHolder>() {
     override fun onBindViewHolder(holder: CityHolder, position: Int) {
         holder.city.text = data[position].city
         data[position]?.weather?.get(0)
-            ?.let { holder.weather.text = ceil(it.temp ?: 0.0).toString() }
+            ?.let { holder.weather.text = ceil(it.temp ?: 0.0).toInt().toString() }
 
         holder.city.setOnClickListener {
             onItemClick?.invoke(data[position])

@@ -7,6 +7,8 @@ import android.net.NetworkCapabilities
 import android.net.NetworkRequest
 import android.os.Build
 import android.os.Bundle
+import android.view.Gravity
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.RecyclerView
@@ -21,6 +23,7 @@ class WeatherActivity : AppCompatActivity() {
     lateinit var weatherViewModel: WeatherViewModel
     lateinit var weatherAdapter: WeatherAdapter
     lateinit var recyclerView: RecyclerView
+    var onMessage: ((String) -> Unit)? = null
     var networkCallback: ConnectivityManager.NetworkCallback =
         object : ConnectivityManager.NetworkCallback() {
             override fun onAvailable(network: Network) {
@@ -59,9 +62,16 @@ class WeatherActivity : AppCompatActivity() {
         weatherViewModel.weatherLiveData.observe(this, Observer {
             weatherAdapter?.let { e -> weatherAdapter.update((it as WeatherModel).weather as ArrayList<Weather>) }
         })
+
         intent.getStringExtra(Const.name_city)?.let {
             supportActionBar?.setTitle(it)
             weatherViewModel.getWeather(it)
+        }
+
+        weatherViewModel.onMessage = { e ->
+            val t = Toast.makeText(applicationContext, e, Toast.LENGTH_LONG)
+            t.setGravity(Gravity.CENTER, 0, 0);
+            t.show()
         }
     }
 

@@ -3,7 +3,7 @@ package com.android.weatherapp.features.app
 import android.app.Application
 import androidx.room.Room
 import com.android.testmvvm.features.db.AppDatabase
-import com.android.weatherapp.features.service.RestApi
+import com.android.weatherapp.service.RestApi
 
 class App : Application(), IApp {
 
