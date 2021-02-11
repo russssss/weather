@@ -70,7 +70,7 @@ class WeatherViewModel(val db: AppDatabase, val mainRepository: MainRepository, 
                     val temperatureDB: List<WeatherWeekStorageData?>? =
                         it.weatherList?.map {
                             WeatherWeekStorageData(
-                                it?.dtTxt,
+                                TimeUtils.formatTime(it?.dt ?: 0),
                                 it.temp?.day
                             )
                         }
