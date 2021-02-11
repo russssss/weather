@@ -4,11 +4,13 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.android.weatherapp.R
+import com.android.weatherapp.features.weather.WeatherModel
+import kotlin.math.ceil
 
 class CityAdapter : RecyclerView.Adapter<CityHolder>() {
 
-    var onItemClick: ((String) -> Unit)? = null
-    var data = ArrayList<String>()
+    var onItemClick: ((WeatherModel) -> Unit)? = null
+    var data = ArrayList<WeatherModel>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CityHolder {
         var v = LayoutInflater.from(parent.getContext())
@@ -18,8 +20,8 @@ class CityAdapter : RecyclerView.Adapter<CityHolder>() {
     }
 
     override fun onBindViewHolder(holder: CityHolder, position: Int) {
-        holder.city.text = data[position]
-        holder.weather.text = data[position]
+        holder.city.text = data[position].city
+        data[position]?.weather?.get(0)?.let { holder.weather.text = ceil(it.temp!!).toString() }
 
         holder.city.setOnClickListener {
             onItemClick?.invoke(data[position])
@@ -30,7 +32,7 @@ class CityAdapter : RecyclerView.Adapter<CityHolder>() {
         return data.size
     }
 
-    fun update(data: ArrayList<String>) {
+    fun update(data: ArrayList<WeatherModel>) {
         this.data = data
         notifyDataSetChanged()
     }

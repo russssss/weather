@@ -12,7 +12,7 @@ class WeatherAdapter: RecyclerView.Adapter<WeatherHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): WeatherHolder {
         var v = LayoutInflater.from(parent.getContext())
-            .inflate(R.layout.weather_layout, parent, false)
+            .inflate(R.layout.weather_item_layout, parent, false)
 
         return WeatherHolder(v)
     }
