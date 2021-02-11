@@ -6,7 +6,11 @@ import com.google.gson.annotations.SerializedName
 class WeatherList {
     @SerializedName("dt")
     @Expose
-    var dt: Int? = null
+    var dt: Long? = null
+
+    @SerializedName("temp")
+    @Expose
+    var temp: Temp? = null
 
     @SerializedName("main")
     @Expose
@@ -18,7 +22,7 @@ class WeatherList {
 
     @SerializedName("clouds")
     @Expose
-    var clouds: Clouds? = null
+    var clouds: Int? = null
 
     @SerializedName("wind")
     @Expose
@@ -34,7 +38,7 @@ class WeatherList {
 
     @SerializedName("snow")
     @Expose
-    var snow: Snow? = null
+    var snow: Double? = null
 
     @SerializedName("sys")
     @Expose

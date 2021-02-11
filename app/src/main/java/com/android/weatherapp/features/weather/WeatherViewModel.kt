@@ -9,6 +9,7 @@ import com.android.testmvvm.features.db.StorageApi
 import com.android.testmvvm.features.db.WeatherStorageData
 import com.android.weatherapp.features.app.App
 import com.android.weatherapp.features.db.WeatherWeekStorageData
+import com.android.weatherapp.utils.TimeUtils
 import kotlinx.coroutines.*
 import kotlin.coroutines.CoroutineContext
 
@@ -48,8 +49,6 @@ class WeatherViewModel(application: Application) : AndroidViewModel(application)
                 val temperature: List<Weather?>? =
                     it.weekweather?.map { Weather(it?.date, it?.temp) }
                 weatherModel = WeatherModel(it.city, temperature)
-
-                Log.d("msg", "show 1");
             }
         }
 
@@ -58,18 +57,25 @@ class WeatherViewModel(application: Application) : AndroidViewModel(application)
         mainRepository.getWether(cityName)?.let {
             val city: String? = it.let { it.city?.name }
             val temperature: List<Weather?>? =
-                it.weatherList?.map { Weather(it?.dtTxt, it.main?.temp) }
+                it.weatherList?.map {
+                    Weather(
+                        TimeUtils.formatTime(it?.dt ?: 0),
+                        it.temp?.day
+                    )
+                }
             var weatherModel = WeatherModel(city, temperature)
-
-            Log.d("msg", "show 2");
 
             if (weatherModel != null) {
                 withContext(Dispatchers.IO) {
                     val temperatureDB: List<WeatherWeekStorageData?>? =
-                        it.weatherList?.map { WeatherWeekStorageData(it?.dtTxt, it.main?.temp) }
+                        it.weatherList?.map {
+                            WeatherWeekStorageData(
+                                it?.dtTxt,
+                                it.temp?.day
+                            )
+                        }
                     val d = WeatherStorageData(0, cityName, temperatureDB);
                     db.weatherDao().insertAll(d)
-                    Log.d("msg", "show 3");
                 }
                 weatherLiveData.value = weatherModel
             }

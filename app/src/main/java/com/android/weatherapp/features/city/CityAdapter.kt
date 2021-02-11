@@ -14,14 +14,15 @@ class CityAdapter : RecyclerView.Adapter<CityHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CityHolder {
         var v = LayoutInflater.from(parent.getContext())
-            .inflate(R.layout.city_layout, parent, false)
+            .inflate(R.layout.city_item_layout, parent, false)
 
         return CityHolder(v)
     }
 
     override fun onBindViewHolder(holder: CityHolder, position: Int) {
         holder.city.text = data[position].city
-        data[position]?.weather?.get(0)?.let { holder.weather.text = ceil(it.temp!!).toString() }
+        data[position]?.weather?.get(0)
+            ?.let { holder.weather.text = ceil(it.temp ?: 0.0).toString() }
 
         holder.city.setOnClickListener {
             onItemClick?.invoke(data[position])

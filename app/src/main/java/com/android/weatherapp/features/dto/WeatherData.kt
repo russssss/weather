@@ -10,7 +10,7 @@ class WeatherData {
 
     @SerializedName("message")
     @Expose
-    var message: Int? = null
+    var message: Double? = null
 
     @SerializedName("cnt")
     @Expose

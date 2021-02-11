@@ -8,7 +8,9 @@ import android.net.NetworkCapabilities
 import android.net.NetworkRequest
 import android.os.Build
 import android.os.Bundle
+import android.view.Gravity
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.RecyclerView
@@ -32,6 +34,7 @@ class CityActivity : AppCompatActivity() {
         override fun onAvailable(network: Network) {
             cityViewModel.getWeather(*cityList.toTypedArray())
         }
+
         override fun onLost(network: Network) {
 
         }
@@ -66,9 +69,11 @@ class CityActivity : AppCompatActivity() {
 
         citySubmit.setOnClickListener {
             cityInput.text?.toString()?.trim()?.let {
+                cityInput.text = ""
                 cityViewModel.getWeather(it)
             }
         }
+
     }
 
     private fun init() {
@@ -79,6 +84,12 @@ class CityActivity : AppCompatActivity() {
         })
 
         cityViewModel.getWeather(*cityList.toTypedArray())
+
+        cityViewModel.onMessage = { e ->
+            val t = Toast.makeText(applicationContext, e, Toast.LENGTH_LONG)
+            t.setGravity(Gravity.CENTER, 0, 0);
+            t.show()
+        }
     }
 
     private fun initNetwork() {
